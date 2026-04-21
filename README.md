@@ -23,6 +23,16 @@ git commit -m "Kurz beschreiben, was geändert wurde"
 git push
 ```
 
+## Nuetzliche gh-Befehle
+
+Wenn die GitHub CLI angemeldet ist, sind diese Befehle im Alltag praktisch:
+
+```bash
+gh auth status
+gh repo view georg184/transformation_of_functions --web
+gh browse
+```
+
 ## GitHub Pages
 
 Das Projekt wird aus dem Branch `main` aus dem Repository-Root veröffentlicht. Nach jedem `git push` wird die öffentliche Seite von GitHub Pages aktualisiert.
