@@ -10,7 +10,10 @@ The public version is available through GitHub Pages:
 
 ## Project Structure
 
-- `index.html`: the complete app, including layout, controls, and GeoGebra integration
+- `index.html`: the main document structure and external file references
+- `css/styles.css`: the app styling
+- `js/mathjax-config.js`: MathJax configuration
+- `js/app.js`: the app logic, startup flow, and GeoGebra integration
 
 ## Local Workflow
 
