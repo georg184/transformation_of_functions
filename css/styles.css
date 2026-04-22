@@ -162,6 +162,7 @@ code {
 
 .block-diagram {
   overflow-x: auto;
+  padding-top: 28px;
   padding-bottom: 6px;
 }
 
