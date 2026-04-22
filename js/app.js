@@ -1226,10 +1226,8 @@ if (initialState && initialState.lang) {
 
 applyLanguage();
 if (initialState && initialState.view === 'app') {
-  showAppScreen({
-    syncFromIntro: true,
-    pushHistory: false
-  });
+  showIntroScreen();
+  pushHistoryState('intro');
 } else {
   showIntroScreen();
   syncHistoryState();
