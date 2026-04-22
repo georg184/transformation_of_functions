@@ -135,14 +135,14 @@ code {
 .block-diagram {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
-  gap: 18px;
+  gap: 0;
   align-items: center;
 }
 
 .diagram-chain {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 0;
   min-height: 76px;
   flex-wrap: wrap;
 }

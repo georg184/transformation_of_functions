@@ -206,7 +206,7 @@ function updateBlockDiagram() {
   }
   if (state.useD) {
     leftBlocks.push(String.raw`\(
-      x \mapsto \frac{1}{\param{d}}\cdot x
+      x \mapsto \frac{x}{\param{d}}
     \)`);
   }
   if (state.useA) {
