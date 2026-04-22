@@ -9,6 +9,13 @@ const DEFAULT_VIEW = {
   ymax: 10
 };
 
+const DEFAULT_PARAMETERS = {
+  a: 1,
+  d: 1,
+  u: 0,
+  v: 0
+};
+
 const controls = {
   introScreen: document.getElementById('introScreen'),
   appScreen: document.getElementById('appScreen'),
@@ -75,6 +82,10 @@ function formatNumber(value) {
   return String(rounded);
 }
 
+function valuesEqual(left, right) {
+  return Math.abs(left - right) < 1e-12;
+}
+
 function paramToken(content) {
   return `\\param{${content}}`;
 }
@@ -102,6 +113,30 @@ function getState() {
     u: getNumberValue(controls.uNumber, 0),
     v: getNumberValue(controls.vNumber, 0)
   };
+}
+
+function updateParameterAvailability() {
+  controls.aRange.disabled = !controls.aEnabled.checked;
+  controls.aNumber.disabled = !controls.aEnabled.checked;
+  controls.dRange.disabled = !controls.dEnabled.checked;
+  controls.dNumber.disabled = !controls.dEnabled.checked;
+  controls.uRange.disabled = !controls.uEnabled.checked;
+  controls.uNumber.disabled = !controls.uEnabled.checked;
+  controls.vRange.disabled = !controls.vEnabled.checked;
+  controls.vNumber.disabled = !controls.vEnabled.checked;
+}
+
+function hasResettableChanges() {
+  return !(
+    valuesEqual(getNumberValue(controls.aNumber, DEFAULT_PARAMETERS.a), DEFAULT_PARAMETERS.a) &&
+    valuesEqual(getNumberValue(controls.dNumber, DEFAULT_PARAMETERS.d), DEFAULT_PARAMETERS.d) &&
+    valuesEqual(getNumberValue(controls.uNumber, DEFAULT_PARAMETERS.u), DEFAULT_PARAMETERS.u) &&
+    valuesEqual(getNumberValue(controls.vNumber, DEFAULT_PARAMETERS.v), DEFAULT_PARAMETERS.v)
+  );
+}
+
+function updateResetButtonState() {
+  controls.resetButton.disabled = !hasResettableChanges();
 }
 
 function buildSummaryItems(state) {
@@ -569,6 +604,8 @@ function startFromIntro() {
   controls.introScreen.classList.add('hidden');
   controls.appScreen.classList.remove('hidden');
 
+  updateParameterAvailability();
+  updateResetButtonState();
   updateSourceFunctionLine();
   updateSummary();
   updateFormulaDisplays();
@@ -679,6 +716,8 @@ function applyParameters() {
 }
 
 function applyAll() {
+  updateParameterAvailability();
+  updateResetButtonState();
   updateSummary();
   updateFormulaDisplays();
   const okF = applyFunction();
@@ -698,12 +737,14 @@ function resetAll() {
 
   updateSummary();
   updateFormulaDisplays();
+  updateResetButtonState();
   applyParameters();
   restoreDefaultView();
 }
 
 function updateParameterFromRange(rangeEl, numberEl) {
   numberEl.value = rangeEl.value;
+  updateResetButtonState();
   updateFormulaDisplays();
 }
 
@@ -712,6 +753,7 @@ function updateParameterFromNumber(numberEl, rangeEl) {
   if (Number.isFinite(value)) {
     rangeEl.value = String(value);
   }
+  updateResetButtonState();
   updateFormulaDisplays();
 }
 
@@ -743,6 +785,8 @@ const toggles = [
 
 for (const toggle of toggles) {
   toggle.addEventListener('change', function() {
+    updateParameterAvailability();
+    updateResetButtonState();
     updateSummary();
     updateFormulaDisplays();
     applyParameters();
