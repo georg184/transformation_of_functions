@@ -172,8 +172,9 @@ function buildDiagramMathHtml(latex, className) {
   return `<span class="${className} mathjax-inline">\\(${latex}\\)</span>`;
 }
 
-function buildDiagramBlockHtml(blockLatex) {
-  return `<div class="diagram-block">${buildDiagramMathHtml(blockLatex, 'diagram-block-math')}</div>`;
+function buildDiagramBlockHtml(blockLatex, className = '') {
+  const classes = className ? `diagram-block ${className}` : 'diagram-block';
+  return `<div class="${classes}">${buildDiagramMathHtml(blockLatex, 'diagram-block-math')}</div>`;
 }
 
 function buildDiagramSegmentHtml(labelLatex = '') {
@@ -207,19 +208,22 @@ function buildDiagramItems(state) {
   if (state.useD) {
     partialState.useD = true;
     items.push({
+      className: 'diagram-block-compact',
       blockLatex: String.raw`\overline{x} \mapsto \frac{\overline{x}}{\param{d}}`,
       outputLatex: buildArgumentLatex(partialState, false)
     });
   }
 
   items.push({
-    kind: 'function',
+    className: 'diagram-block-function',
+    blockLatex: String.raw`\overline{x} \mapsto f\!\left(\overline{x}\right)`,
     outputLatex: buildFunctionExpressionLatex(partialState, false)
   });
 
   if (state.useA) {
     partialState.useA = true;
     items.push({
+      className: 'diagram-block-compact',
       blockLatex: String.raw`\overline{x} \mapsto \param{a}\cdot \overline{x}`,
       outputLatex: buildFunctionExpressionLatex(partialState, false)
     });
@@ -246,11 +250,7 @@ function updateBlockDiagram() {
   ];
 
   items.forEach(function(item, index) {
-    if (item.kind === 'function') {
-      parts.push('<div class="diagram-block diagram-block-function">f</div>');
-    } else {
-      parts.push(buildDiagramBlockHtml(item.blockLatex));
-    }
+    parts.push(buildDiagramBlockHtml(item.blockLatex, item.className || ''));
 
     if (index < items.length - 1) {
       parts.push(buildDiagramSegmentHtml(item.outputLatex || ''));
@@ -324,9 +324,9 @@ function buildFunctionExpressionLatex(state, useValues) {
 
 function buildFunctionLatex(state, useValues) {
   const expr = buildFunctionExpressionLatex(state, useValues);
-  return String.raw`\[
+  return String.raw`\(
         g(x) = ${expr}
-      \]`;
+      \)`;
 }
 
 function tokenizeExpression(source) {
