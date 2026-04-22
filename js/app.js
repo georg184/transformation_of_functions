@@ -200,7 +200,7 @@ function buildDiagramItems(state) {
     partialState.useU = true;
     items.push({
       blockLatex: String.raw`\overline{x} \mapsto \overline{x} - \param{u}`,
-      outputLatex: buildFunctionExpressionLatex(partialState, false)
+      outputLatex: buildArgumentLatex(partialState, false)
     });
   }
 
@@ -208,7 +208,7 @@ function buildDiagramItems(state) {
     partialState.useD = true;
     items.push({
       blockLatex: String.raw`\overline{x} \mapsto \frac{\overline{x}}{\param{d}}`,
-      outputLatex: buildFunctionExpressionLatex(partialState, false)
+      outputLatex: buildArgumentLatex(partialState, false)
     });
   }
 
