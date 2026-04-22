@@ -180,7 +180,10 @@ function buildDiagramSegmentHtml(labelLatex = '') {
   const labelHtml = labelLatex
     ? buildDiagramMathHtml(labelLatex, 'diagram-connector-label')
     : '';
-  return `<span class="diagram-segment">${labelHtml}<span class="diagram-connector" aria-hidden="true"></span></span>`;
+  const segmentClass = labelLatex
+    ? 'diagram-segment'
+    : 'diagram-segment diagram-segment-compact';
+  return `<span class="${segmentClass}">${labelHtml}<span class="diagram-connector" aria-hidden="true"></span></span>`;
 }
 
 function buildDiagramItems(state) {

@@ -195,6 +195,11 @@ code {
   height: 24px;
 }
 
+.diagram-segment-compact {
+  width: 74px;
+  min-width: 74px;
+}
+
 .diagram-connector {
   position: relative;
   width: 100%;
