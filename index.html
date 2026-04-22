@@ -48,6 +48,7 @@
     h1 {
       margin: 0 0 10px 0;
       font-size: 1.8rem;
+      text-align: center;
     }
 
     p {
@@ -72,6 +73,49 @@
       border-radius: 14px;
       background: var(--panel);
       padding: 16px;
+    }
+
+    .screen.hidden {
+      display: none;
+    }
+
+    .intro-screen {
+      max-width: 760px;
+      margin: 0 auto;
+    }
+
+    .app-screen {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .intro-option-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .intro-option {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    .intro-option input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      margin: 2px 0 0 0;
+      accent-color: var(--accent);
+      cursor: pointer;
+      flex: 0 0 auto;
+    }
+
+    .intro-note {
+      margin-top: 16px;
+      color: var(--muted);
+      font-size: 0.95rem;
     }
 
     .formula {
@@ -322,135 +366,187 @@
 <body>
   <h1>Transformation von Funktionen</h1>
 
-  <p id="sourceFunctionLine" class="top-line mathjax-inline"></p>
-  <p id="transformationSummary"></p>
-
-  <div class="formula">
-    <div class="formula-title">Transformierte Funktion:</div>
-    <div id="formulaMain" class="mathjax-display" aria-label="Transformierte Funktion"></div>
-    <div id="formulaMainNote" class="formula-note mathjax-inline"></div>
-  </div>
-
-  <div class="layout">
+  <div id="introScreen" class="screen intro-screen">
     <div class="panel">
       <div class="control-group">
-        <label for="fInput">Funktion <code>f(x)</code></label>
-        <input id="fInput" type="text" value="x^2" spellcheck="false" />
-
-        <div class="preset-row">
-          <label for="functionPreset">Funktionstyp auswählen</label>
-          <select id="functionPreset">
-            <option value="">Bitte wählen …</option>
-            <option value="x">Lineare Funktion: x</option>
-            <option value="x^2" selected>Quadratische Funktion: x^2</option>
-            <option value="x^3">Kubische Funktion: x^3</option>
-            <option value="sqrt(x)">Wurzelfunktion: sqrt(x)</option>
-            <option value="1/x">Kehrwertfunktion: 1/x</option>
-            <option value="abs(x)">Betragsfunktion: abs(x)</option>
-            <option value="sin(x)">Sinusfunktion: sin(x)</option>
-            <option value="cos(x)">Kosinusfunktion: cos(x)</option>
-            <option value="exp(x)">Exponentialfunktion: exp(x)</option>
-            <option value="ln(x)">Logarithmusfunktion: ln(x)</option>
-            <option value="1/(x^2+1)">Gebrochen-rationale Funktion: 1/(x^2+1)</option>
-          </select>
+        <label>Transformationen, die kombiniert werden sollen</label>
+        <div class="intro-option-list">
+          <label class="intro-option" for="introAEnabled">
+            <input id="introAEnabled" type="checkbox" />
+            <span>Skalierung in y-Richtung</span>
+          </label>
+          <label class="intro-option" for="introDEnabled">
+            <input id="introDEnabled" type="checkbox" />
+            <span>Skalierung in x-Richtung</span>
+          </label>
+          <label class="intro-option" for="introUEnabled">
+            <input id="introUEnabled" type="checkbox" checked />
+            <span>Verschiebung in x-Richtung</span>
+          </label>
+          <label class="intro-option" for="introVEnabled">
+            <input id="introVEnabled" type="checkbox" />
+            <span>Verschiebung in y-Richtung</span>
+          </label>
         </div>
       </div>
 
       <div class="control-group">
-        <div class="param-title">Transformationen</div>
-
-        <div class="param-list">
-          <div class="param-item">
-            <div class="param-checkbox">
-              <input id="aEnabled" type="checkbox" checked aria-label="a aktivieren" />
-            </div>
-            <div class="param-body">
-              <div class="param-label">
-                <span class="param-desc">Skalierung in y-Richtung um den Faktor <span class="param-name">a</span></span>
-              </div>
-              <div class="param-row">
-                <input id="aRange" type="range" min="-5" max="5" step="0.1" value="1" />
-                <div class="param-value">
-                  <span class="param-value-label"><span class="param-name">a</span><span class="param-sep">=</span></span>
-                  <input id="aNumber" type="number" min="-5" max="5" step="0.1" value="1" />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="param-item">
-            <div class="param-checkbox">
-              <input id="dEnabled" type="checkbox" checked aria-label="d aktivieren" />
-            </div>
-            <div class="param-body">
-              <div class="param-label">
-                <span class="param-desc">Skalierung in x-Richtung um den Faktor <span class="param-name">d</span></span>
-              </div>
-              <div class="param-row">
-                <input id="dRange" type="range" min="-5" max="5" step="0.1" value="1" />
-                <div class="param-value">
-                  <span class="param-value-label"><span class="param-name">d</span><span class="param-sep">=</span></span>
-                  <input id="dNumber" type="number" min="-5" max="5" step="0.1" value="1" />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="param-item">
-            <div class="param-checkbox">
-              <input id="uEnabled" type="checkbox" checked aria-label="u aktivieren" />
-            </div>
-            <div class="param-body">
-              <div class="param-label">
-                <span class="param-desc">Verschiebung in x-Richtung um <span class="param-name">u</span></span>
-              </div>
-              <div class="param-row">
-                <input id="uRange" type="range" min="-10" max="10" step="0.1" value="0" />
-                <div class="param-value">
-                  <span class="param-value-label"><span class="param-name">u</span><span class="param-sep">=</span></span>
-                  <input id="uNumber" type="number" min="-10" max="10" step="0.1" value="0" />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="param-item">
-            <div class="param-checkbox">
-              <input id="vEnabled" type="checkbox" checked aria-label="v aktivieren" />
-            </div>
-            <div class="param-body">
-              <div class="param-label">
-                <span class="param-desc">Verschiebung in y-Richtung um <span class="param-name">v</span></span>
-              </div>
-              <div class="param-row">
-                <input id="vRange" type="range" min="-10" max="10" step="0.1" value="0" />
-                <div class="param-value">
-                  <span class="param-value-label"><span class="param-name">v</span><span class="param-sep">=</span></span>
-                  <input id="vNumber" type="number" min="-10" max="10" step="0.1" value="0" />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <label for="introFunctionPreset">Funktionentyp</label>
+        <select id="introFunctionPreset">
+          <option value="x">Lineare Funktion: x</option>
+          <option value="x^2" selected>Quadratische Funktion: x^2</option>
+          <option value="x^3">Kubische Funktion: x^3</option>
+          <option value="sqrt(x)">Wurzelfunktion: sqrt(x)</option>
+          <option value="1/x">Kehrwertfunktion: 1/x</option>
+          <option value="abs(x)">Betragsfunktion: abs(x)</option>
+          <option value="sin(x)">Sinusfunktion: sin(x)</option>
+          <option value="cos(x)">Kosinusfunktion: cos(x)</option>
+          <option value="exp(x)">Exponentialfunktion: exp(x)</option>
+          <option value="ln(x)">Logarithmusfunktion: ln(x)</option>
+          <option value="1/(x^2+1)">Gebrochen-rationale Funktion: 1/(x^2+1)</option>
+        </select>
       </div>
 
       <div class="buttons">
-        <button id="resetButton">Zurücksetzen</button>
+        <button id="startButton">Start</button>
       </div>
 
-      <div id="status" class="status"></div>
+      <p class="intro-note">Hinweis: Sämtliche Auswahlen lassen sich auch in der App ändern.</p>
+    </div>
+  </div>
 
-      <div class="value-list">
-        <div class="value-list-title">Aktuell:</div>
-        <div id="formulaPreview" class="mathjax-display" aria-label="Aktuelle Funktion"></div>
-      </div>
+  <div id="appScreen" class="screen app-screen hidden">
+    <p id="sourceFunctionLine" class="top-line mathjax-inline"></p>
+    <p id="transformationSummary"></p>
+
+    <div class="formula">
+      <div class="formula-title">Transformierte Funktion:</div>
+      <div id="formulaMain" class="mathjax-display" aria-label="Transformierte Funktion"></div>
+      <div id="formulaMainNote" class="formula-note mathjax-inline"></div>
     </div>
 
-    <div id="ggb-element"></div>
+    <div class="layout">
+      <div class="panel">
+        <div class="control-group">
+          <label for="fInput">Funktion <code>f(x)</code></label>
+          <input id="fInput" type="text" value="x^2" spellcheck="false" />
+
+          <div class="preset-row">
+            <label for="functionPreset">Funktionstyp auswählen</label>
+            <select id="functionPreset">
+              <option value="">Bitte wählen …</option>
+              <option value="x">Lineare Funktion: x</option>
+              <option value="x^2" selected>Quadratische Funktion: x^2</option>
+              <option value="x^3">Kubische Funktion: x^3</option>
+              <option value="sqrt(x)">Wurzelfunktion: sqrt(x)</option>
+              <option value="1/x">Kehrwertfunktion: 1/x</option>
+              <option value="abs(x)">Betragsfunktion: abs(x)</option>
+              <option value="sin(x)">Sinusfunktion: sin(x)</option>
+              <option value="cos(x)">Kosinusfunktion: cos(x)</option>
+              <option value="exp(x)">Exponentialfunktion: exp(x)</option>
+              <option value="ln(x)">Logarithmusfunktion: ln(x)</option>
+              <option value="1/(x^2+1)">Gebrochen-rationale Funktion: 1/(x^2+1)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <div class="param-title">Transformationen</div>
+
+          <div class="param-list">
+            <div class="param-item">
+              <div class="param-checkbox">
+                <input id="aEnabled" type="checkbox" checked aria-label="a aktivieren" />
+              </div>
+              <div class="param-body">
+                <div class="param-label">
+                  <span class="param-desc">Skalierung in y-Richtung um den Faktor <span class="param-name">a</span></span>
+                </div>
+                <div class="param-row">
+                  <input id="aRange" type="range" min="-5" max="5" step="0.1" value="1" />
+                  <div class="param-value">
+                    <span class="param-value-label"><span class="param-name">a</span><span class="param-sep">=</span></span>
+                    <input id="aNumber" type="number" min="-5" max="5" step="0.1" value="1" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="param-item">
+              <div class="param-checkbox">
+                <input id="dEnabled" type="checkbox" checked aria-label="d aktivieren" />
+              </div>
+              <div class="param-body">
+                <div class="param-label">
+                  <span class="param-desc">Skalierung in x-Richtung um den Faktor <span class="param-name">d</span></span>
+                </div>
+                <div class="param-row">
+                  <input id="dRange" type="range" min="-5" max="5" step="0.1" value="1" />
+                  <div class="param-value">
+                    <span class="param-value-label"><span class="param-name">d</span><span class="param-sep">=</span></span>
+                    <input id="dNumber" type="number" min="-5" max="5" step="0.1" value="1" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="param-item">
+              <div class="param-checkbox">
+                <input id="uEnabled" type="checkbox" checked aria-label="u aktivieren" />
+              </div>
+              <div class="param-body">
+                <div class="param-label">
+                  <span class="param-desc">Verschiebung in x-Richtung um <span class="param-name">u</span></span>
+                </div>
+                <div class="param-row">
+                  <input id="uRange" type="range" min="-10" max="10" step="0.1" value="0" />
+                  <div class="param-value">
+                    <span class="param-value-label"><span class="param-name">u</span><span class="param-sep">=</span></span>
+                    <input id="uNumber" type="number" min="-10" max="10" step="0.1" value="0" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="param-item">
+              <div class="param-checkbox">
+                <input id="vEnabled" type="checkbox" checked aria-label="v aktivieren" />
+              </div>
+              <div class="param-body">
+                <div class="param-label">
+                  <span class="param-desc">Verschiebung in y-Richtung um <span class="param-name">v</span></span>
+                </div>
+                <div class="param-row">
+                  <input id="vRange" type="range" min="-10" max="10" step="0.1" value="0" />
+                  <div class="param-value">
+                    <span class="param-value-label"><span class="param-name">v</span><span class="param-sep">=</span></span>
+                    <input id="vNumber" type="number" min="-10" max="10" step="0.1" value="0" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="buttons">
+          <button id="resetButton">Zurücksetzen</button>
+        </div>
+
+        <div id="status" class="status"></div>
+
+        <div class="value-list">
+          <div class="value-list-title">Aktuell:</div>
+          <div id="formulaPreview" class="mathjax-display" aria-label="Aktuelle Funktion"></div>
+        </div>
+      </div>
+
+      <div id="ggb-element"></div>
+    </div>
   </div>
 
   <script>
     let ggbApplet = null;
+    let appletBuildStarted = false;
     let lastValidActiveD = 1;
 
     const DEFAULT_VIEW = {
@@ -461,6 +557,15 @@
     };
 
     const controls = {
+      introScreen: document.getElementById('introScreen'),
+      appScreen: document.getElementById('appScreen'),
+      startButton: document.getElementById('startButton'),
+      introFunctionPreset: document.getElementById('introFunctionPreset'),
+      introAEnabled: document.getElementById('introAEnabled'),
+      introDEnabled: document.getElementById('introDEnabled'),
+      introUEnabled: document.getElementById('introUEnabled'),
+      introVEnabled: document.getElementById('introVEnabled'),
+
       fInput: document.getElementById('fInput'),
       functionPreset: document.getElementById('functionPreset'),
 
@@ -969,6 +1074,11 @@
     }
 
     function buildApplet() {
+      if (appletBuildStarted) {
+        return;
+      }
+      appletBuildStarted = true;
+
       const params = {
         appName: 'graphing',
         width: 1000,
@@ -987,8 +1097,33 @@
       };
 
       const applet = new GGBApplet(params, true);
-      window.addEventListener('load', function() {
-        applet.inject('ggb-element');
+      applet.inject('ggb-element');
+    }
+
+    function syncAppSettingsFromIntro() {
+      controls.aEnabled.checked = controls.introAEnabled.checked;
+      controls.dEnabled.checked = controls.introDEnabled.checked;
+      controls.uEnabled.checked = controls.introUEnabled.checked;
+      controls.vEnabled.checked = controls.introVEnabled.checked;
+
+      controls.functionPreset.value = controls.introFunctionPreset.value;
+      controls.fInput.value = controls.introFunctionPreset.value;
+    }
+
+    function startFromIntro() {
+      syncAppSettingsFromIntro();
+      controls.introScreen.classList.add('hidden');
+      controls.appScreen.classList.remove('hidden');
+
+      updateSourceFunctionLine();
+      updateSummary();
+      updateFormulaDisplays();
+
+      requestAnimationFrame(function() {
+        buildApplet();
+        if (ggbApplet) {
+          applyAll();
+        }
       });
     }
 
@@ -1178,10 +1313,7 @@
       applyAll();
     });
 
-    updateSourceFunctionLine();
-    updateSummary();
-    updateFormulaDisplays();
-    buildApplet();
+    controls.startButton.addEventListener('click', startFromIntro);
   </script>
 </body>
 </html>
