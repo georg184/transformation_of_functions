@@ -197,7 +197,7 @@ function buildDiagramItems(state) {
     partialState.useU = true;
     items.push({
       blockLatex: String.raw`\overline{x} \mapsto \overline{x} - \param{u}`,
-      connectorLabelLatex: buildFunctionExpressionLatex(partialState, false)
+      outputLatex: buildFunctionExpressionLatex(partialState, false)
     });
   }
 
@@ -205,19 +205,20 @@ function buildDiagramItems(state) {
     partialState.useD = true;
     items.push({
       blockLatex: String.raw`\overline{x} \mapsto \frac{\overline{x}}{\param{d}}`,
-      connectorLabelLatex: buildFunctionExpressionLatex(partialState, false)
+      outputLatex: buildFunctionExpressionLatex(partialState, false)
     });
   }
 
   items.push({
-    kind: 'function'
+    kind: 'function',
+    outputLatex: buildFunctionExpressionLatex(partialState, false)
   });
 
   if (state.useA) {
     partialState.useA = true;
     items.push({
       blockLatex: String.raw`\overline{x} \mapsto \param{a}\cdot \overline{x}`,
-      connectorLabelLatex: buildFunctionExpressionLatex(partialState, false)
+      outputLatex: buildFunctionExpressionLatex(partialState, false)
     });
   }
 
@@ -225,7 +226,7 @@ function buildDiagramItems(state) {
     partialState.useV = true;
     items.push({
       blockLatex: String.raw`\overline{x} \mapsto \overline{x} + \param{v}`,
-      connectorLabelLatex: buildFunctionExpressionLatex(partialState, false)
+      outputLatex: buildFunctionExpressionLatex(partialState, false)
     });
   }
 
@@ -235,7 +236,7 @@ function buildDiagramItems(state) {
 function updateBlockDiagram() {
   const state = getState();
   const items = buildDiagramItems(state);
-  const outputLatex = `g(x) = ${buildFunctionExpressionLatex(state, false)}`;
+  const outputLatex = buildFunctionExpressionLatex(state, false);
   const parts = [
     `<div class="diagram-terminal diagram-terminal-input">${buildDiagramMathHtml('x', 'diagram-terminal-math')}</div>`,
     buildDiagramSegmentHtml()
@@ -249,7 +250,7 @@ function updateBlockDiagram() {
     }
 
     if (index < items.length - 1) {
-      parts.push(buildDiagramSegmentHtml(item.connectorLabelLatex || ''));
+      parts.push(buildDiagramSegmentHtml(item.outputLatex || ''));
     }
   });
 
