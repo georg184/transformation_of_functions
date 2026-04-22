@@ -48,7 +48,6 @@ const controls = {
   sourceFunctionLine: document.getElementById('sourceFunctionLine'),
   transformationSummary: document.getElementById('transformationSummary'),
   formulaMain: document.getElementById('formulaMain'),
-  formulaMainNote: document.getElementById('formulaMainNote'),
   formulaPreview: document.getElementById('formulaPreview'),
   diagramFlow: document.getElementById('diagramFlow')
 };
@@ -157,7 +156,7 @@ function buildSummaryItems(state) {
     items.push('Skalierung in y-Richtung um den Faktor <span class="inline-param">a</span>');
   }
   if (state.useD) {
-    items.push('Skalierung in x-Richtung um den Faktor <span class="inline-param">d</span>');
+    items.push('Skalierung in x-Richtung um den Faktor <span class="inline-param">d</span> ≠ 0');
   }
   if (state.useU) {
     items.push('Verschiebung in x-Richtung um <span class="inline-param">u</span>');
@@ -622,15 +621,6 @@ function updateFormulaDisplays() {
           g(x) = ${currentExpr}
         \]`;
   renderMath(controls.formulaPreview, previewLatex);
-
-  if (state.useD) {
-    renderMath(
-      controls.formulaMainNote,
-      String.raw`\(\text{Dabei muss } \param{d} \neq 0 \text{ gelten.}\)`
-    );
-  } else {
-    controls.formulaMainNote.innerHTML = '';
-  }
 }
 
 function validateDWhenActive() {
