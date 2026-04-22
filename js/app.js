@@ -104,6 +104,17 @@ function renderMath(element, latex) {
   }
 }
 
+function typesetElements(elements) {
+  if (window.MathJax && typeof MathJax.typesetClear === 'function') {
+    MathJax.typesetClear(elements);
+  }
+  if (window.MathJax && typeof MathJax.typesetPromise === 'function') {
+    MathJax.typesetPromise(elements).catch(function(error) {
+      console.error('MathJax rendering failed:', error);
+    });
+  }
+}
+
 function getState() {
   return {
     useA: controls.aEnabled.checked,
@@ -166,18 +177,18 @@ function buildDiagramChain(blocks, side) {
   const parts = [];
 
   if (side === 'right') {
-    parts.push('<span class="diagram-arrow" aria-hidden="true">→</span>');
+    parts.push('<span class="diagram-connector" aria-hidden="true"></span>');
   }
 
   blocks.forEach(function(block, index) {
     parts.push(`<div class="diagram-block">${block}</div>`);
     if (index < blocks.length - 1) {
-      parts.push('<span class="diagram-arrow" aria-hidden="true">→</span>');
+      parts.push('<span class="diagram-connector" aria-hidden="true"></span>');
     }
   });
 
   if (side === 'left') {
-    parts.push('<span class="diagram-arrow" aria-hidden="true">→</span>');
+    parts.push('<span class="diagram-connector" aria-hidden="true"></span>');
   }
 
   return parts.join('');
@@ -189,20 +200,29 @@ function updateBlockDiagram() {
   const rightBlocks = [];
 
   if (state.useU) {
-    leftBlocks.push('x |→ x-<span class="param-name">u</span>');
+    leftBlocks.push(String.raw`\(
+      x \mapsto x-\param{u}
+    \)`);
   }
   if (state.useD) {
-    leftBlocks.push('x |→ 1/<span class="param-name">d</span>·x');
+    leftBlocks.push(String.raw`\(
+      x \mapsto \frac{1}{\param{d}}\cdot x
+    \)`);
   }
   if (state.useA) {
-    rightBlocks.push('x |→ <span class="param-name">a</span>·x');
+    rightBlocks.push(String.raw`\(
+      x \mapsto \param{a}\cdot x
+    \)`);
   }
   if (state.useV) {
-    rightBlocks.push('x |→ x+<span class="param-name">v</span>');
+    rightBlocks.push(String.raw`\(
+      x \mapsto x+\param{v}
+    \)`);
   }
 
   controls.diagramLeft.innerHTML = buildDiagramChain(leftBlocks, 'left');
   controls.diagramRight.innerHTML = buildDiagramChain(rightBlocks, 'right');
+  typesetElements([controls.diagramLeft, controls.diagramRight]);
 }
 
 function updateSummary() {
