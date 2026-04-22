@@ -184,7 +184,7 @@ code {
 .diagram-group::before {
   content: '';
   position: absolute;
-  inset: -20px 0 -10px;
+  inset: -34px 0 -10px;
   border: 2px solid var(--transformed);
   border-radius: 16px;
   background: var(--transformed-soft);
@@ -200,10 +200,11 @@ code {
 .diagram-group-label {
   position: absolute;
   left: 50%;
-  top: -22px;
+  top: -46px;
   transform: translateX(-50%);
   color: var(--transformed);
   line-height: 1;
+  z-index: 1;
 }
 
 .diagram-block {
