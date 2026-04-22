@@ -50,8 +50,7 @@ const controls = {
   formulaMain: document.getElementById('formulaMain'),
   formulaMainNote: document.getElementById('formulaMainNote'),
   formulaPreview: document.getElementById('formulaPreview'),
-  diagramLeft: document.getElementById('diagramLeft'),
-  diagramRight: document.getElementById('diagramRight')
+  diagramFlow: document.getElementById('diagramFlow')
 };
 
 function setStatus(message, isError = false) {
@@ -169,60 +168,98 @@ function buildSummaryItems(state) {
   return items;
 }
 
-function buildDiagramChain(blocks, side) {
-  if (blocks.length === 0) {
-    return '';
+function buildDiagramMathHtml(latex, className) {
+  return `<span class="${className} mathjax-inline">\\(${latex}\\)</span>`;
+}
+
+function buildDiagramBlockHtml(blockLatex) {
+  return `<div class="diagram-block">${buildDiagramMathHtml(blockLatex, 'diagram-block-math')}</div>`;
+}
+
+function buildDiagramSegmentHtml(labelLatex = '') {
+  const labelHtml = labelLatex
+    ? buildDiagramMathHtml(labelLatex, 'diagram-connector-label')
+    : '';
+  return `<span class="diagram-segment">${labelHtml}<span class="diagram-connector" aria-hidden="true"></span></span>`;
+}
+
+function buildDiagramItems(state) {
+  const items = [];
+  const partialState = {
+    ...state,
+    useA: false,
+    useD: false,
+    useU: false,
+    useV: false
+  };
+
+  if (state.useU) {
+    partialState.useU = true;
+    items.push({
+      blockLatex: String.raw`\overline{x} \mapsto \overline{x} - \param{u}`,
+      connectorLabelLatex: buildFunctionExpressionLatex(partialState, false)
+    });
   }
 
-  const parts = [];
-
-  if (side === 'right') {
-    parts.push('<span class="diagram-connector" aria-hidden="true"></span>');
+  if (state.useD) {
+    partialState.useD = true;
+    items.push({
+      blockLatex: String.raw`\overline{x} \mapsto \frac{\overline{x}}{\param{d}}`,
+      connectorLabelLatex: buildFunctionExpressionLatex(partialState, false)
+    });
   }
 
-  blocks.forEach(function(block, index) {
-    parts.push(`<div class="diagram-block">${block}</div>`);
-    if (index < blocks.length - 1) {
-      parts.push('<span class="diagram-connector" aria-hidden="true"></span>');
-    }
+  items.push({
+    kind: 'function'
   });
 
-  if (side === 'left') {
-    parts.push('<span class="diagram-connector" aria-hidden="true"></span>');
+  if (state.useA) {
+    partialState.useA = true;
+    items.push({
+      blockLatex: String.raw`\overline{x} \mapsto \param{a}\cdot \overline{x}`,
+      connectorLabelLatex: buildFunctionExpressionLatex(partialState, false)
+    });
   }
 
-  return parts.join('');
+  if (state.useV) {
+    partialState.useV = true;
+    items.push({
+      blockLatex: String.raw`\overline{x} \mapsto \overline{x} + \param{v}`,
+      connectorLabelLatex: buildFunctionExpressionLatex(partialState, false)
+    });
+  }
+
+  return items;
 }
 
 function updateBlockDiagram() {
   const state = getState();
-  const leftBlocks = [];
-  const rightBlocks = [];
+  const items = buildDiagramItems(state);
+  const outputLatex = `g(x) = ${buildFunctionExpressionLatex(state, false)}`;
+  const parts = [
+    `<div class="diagram-terminal diagram-terminal-input">${buildDiagramMathHtml('x', 'diagram-terminal-math')}</div>`,
+    buildDiagramSegmentHtml()
+  ];
 
-  if (state.useU) {
-    leftBlocks.push(String.raw`\(
-      x \mapsto x-\param{u}
-    \)`);
-  }
-  if (state.useD) {
-    leftBlocks.push(String.raw`\(
-      x \mapsto \frac{x}{\param{d}}
-    \)`);
-  }
-  if (state.useA) {
-    rightBlocks.push(String.raw`\(
-      x \mapsto \param{a}\cdot x
-    \)`);
-  }
-  if (state.useV) {
-    rightBlocks.push(String.raw`\(
-      x \mapsto x+\param{v}
-    \)`);
-  }
+  items.forEach(function(item, index) {
+    if (item.kind === 'function') {
+      parts.push('<div class="diagram-block diagram-block-function">f</div>');
+    } else {
+      parts.push(buildDiagramBlockHtml(item.blockLatex));
+    }
 
-  controls.diagramLeft.innerHTML = buildDiagramChain(leftBlocks, 'left');
-  controls.diagramRight.innerHTML = buildDiagramChain(rightBlocks, 'right');
-  typesetElements([controls.diagramLeft, controls.diagramRight]);
+    if (index < items.length - 1) {
+      parts.push(buildDiagramSegmentHtml(item.connectorLabelLatex || ''));
+    }
+  });
+
+  parts.push(buildDiagramSegmentHtml());
+  parts.push(
+    `<div class="diagram-terminal diagram-terminal-output">${buildDiagramMathHtml(outputLatex, 'diagram-terminal-math')}</div>`
+  );
+
+  controls.diagramFlow.innerHTML = parts.join('');
+  typesetElements([controls.diagramFlow]);
 }
 
 function updateSummary() {
