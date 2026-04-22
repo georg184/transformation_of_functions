@@ -200,7 +200,7 @@ code {
 .diagram-group-label {
   position: absolute;
   left: 50%;
-  top: -46px;
+  top: -54px;
   transform: translateX(-50%);
   color: var(--transformed);
   line-height: 1;
