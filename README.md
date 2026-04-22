@@ -1,31 +1,31 @@
 # transformation_of_functions
 
-Interaktives HTML-Applet zur Veranschaulichung von Funktionstransformationen mit GeoGebra und MathJax.
+Interactive HTML applet for demonstrating function transformations with GeoGebra and MathJax.
 
-## Live-Version
+## Live Version
 
-Die öffentliche Version ist über GitHub Pages erreichbar:
+The public version is available through GitHub Pages:
 
 <https://georg184.github.io/transformation_of_functions/>
 
-## Projektstruktur
+## Project Structure
 
-- `index.html`: gesamte App mit Layout, Steuerelementen und GeoGebra-Integration
+- `index.html`: the complete app, including layout, controls, and GeoGebra integration
 
-## Lokaler Ablauf
+## Local Workflow
 
-Das Projekt kann lokal in Zed bearbeitet werden. Danach werden sinnvolle Änderungen mit Git nach GitHub übertragen.
+The project can be edited locally in Zed. Meaningful changes are then transferred to GitHub with Git.
 
 ```bash
 git status
 git add .
-git commit -m "Kurz beschreiben, was geändert wurde"
+git commit -m "Briefly describe the change"
 git push
 ```
 
-## Nuetzliche gh-Befehle
+## Useful `gh` Commands
 
-Wenn die GitHub CLI angemeldet ist, sind diese Befehle im Alltag praktisch:
+When GitHub CLI is logged in, these commands are useful in day-to-day work:
 
 ```bash
 gh auth status
@@ -35,4 +35,4 @@ gh browse
 
 ## GitHub Pages
 
-Das Projekt wird aus dem Branch `main` aus dem Repository-Root veröffentlicht. Nach jedem `git push` wird die öffentliche Seite von GitHub Pages aktualisiert.
+The project is published from the `main` branch and the repository root. After each `git push`, the public site is updated by GitHub Pages.
