@@ -2,6 +2,7 @@ let ggbApplet = null;
 let appletBuildStarted = false;
 let lastValidActiveD = 1;
 let currentLanguage = 'de';
+let currentView = 'intro';
 const TRANSFORMED_COLOR = {
   r: 46,
   g: 160,
@@ -292,6 +293,35 @@ function applyLanguage() {
 function setLanguage(language) {
   currentLanguage = language === 'en' ? 'en' : 'de';
   applyLanguage();
+  syncHistoryState();
+}
+
+function syncHistoryState() {
+  if (!window.history || typeof window.history.replaceState !== 'function') {
+    return;
+  }
+  window.history.replaceState(
+    {
+      view: currentView,
+      lang: currentLanguage
+    },
+    '',
+    window.location.href
+  );
+}
+
+function pushHistoryState(view) {
+  if (!window.history || typeof window.history.pushState !== 'function') {
+    return;
+  }
+  window.history.pushState(
+    {
+      view,
+      lang: currentLanguage
+    },
+    '',
+    window.location.href
+  );
 }
 
 function syncPair(rangeEl, numberEl, value) {
@@ -924,8 +954,23 @@ function syncAppSettingsFromIntro() {
   controls.fInput.value = controls.introFunctionPreset.value;
 }
 
-function startFromIntro() {
-  syncAppSettingsFromIntro();
+function showIntroScreen() {
+  currentView = 'intro';
+  controls.introScreen.classList.remove('hidden');
+  controls.appScreen.classList.add('hidden');
+}
+
+function showAppScreen(options = {}) {
+  const {
+    syncFromIntro = false,
+    pushHistory = false
+  } = options;
+
+  if (syncFromIntro) {
+    syncAppSettingsFromIntro();
+  }
+
+  currentView = 'app';
   controls.introScreen.classList.add('hidden');
   controls.appScreen.classList.remove('hidden');
 
@@ -934,11 +979,24 @@ function startFromIntro() {
   updateBlockDiagram();
   updateFormulaDisplays();
 
+  if (pushHistory) {
+    pushHistoryState('app');
+  } else {
+    syncHistoryState();
+  }
+
   requestAnimationFrame(function() {
     buildApplet();
     if (ggbApplet) {
       applyAll();
     }
+  });
+}
+
+function startFromIntro() {
+  showAppScreen({
+    syncFromIntro: true,
+    pushHistory: true
   });
 }
 
@@ -1144,5 +1202,39 @@ controls.langEnButton.addEventListener('click', function() {
   setLanguage('en');
 });
 
+window.addEventListener('popstate', function(event) {
+  const nextState = event.state || { view: 'intro', lang: currentLanguage };
+  if (nextState.lang && nextState.lang !== currentLanguage) {
+    currentLanguage = nextState.lang === 'en' ? 'en' : 'de';
+    applyLanguage();
+  }
+
+  if (nextState.view === 'app') {
+    showAppScreen({
+      syncFromIntro: !appletBuildStarted,
+      pushHistory: false
+    });
+    return;
+  }
+
+  showIntroScreen();
+  syncHistoryState();
+});
+
+const initialState = window.history && window.history.state ? window.history.state : null;
+if (initialState && initialState.lang) {
+  currentLanguage = initialState.lang === 'en' ? 'en' : 'de';
+}
+
 applyLanguage();
+if (initialState && initialState.view === 'app') {
+  showAppScreen({
+    syncFromIntro: true,
+    pushHistory: false
+  });
+} else {
+  showIntroScreen();
+  syncHistoryState();
+}
+
 controls.startButton.addEventListener('click', startFromIntro);
