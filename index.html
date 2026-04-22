@@ -10,28 +10,24 @@
   <script src="https://www.geogebra.org/apps/deployggb.js"></script>
 </head>
 <body>
+  <div class="language-switcher" role="group" aria-label="Language selector">
+    <button id="langDeButton" class="language-option is-active" type="button" aria-pressed="true" aria-label="Deutsch" title="Deutsch">
+      <span class="language-flag" aria-hidden="true">🇩🇪</span>
+      <span class="language-copy sr-only">
+        <span class="language-name">Deutsch</span>
+      </span>
+    </button>
+    <button id="langEnButton" class="language-option" type="button" aria-pressed="false" aria-label="English" title="English">
+      <span class="language-flag" aria-hidden="true">🇬🇧</span>
+      <span class="language-copy sr-only">
+        <span class="language-name">English</span>
+      </span>
+    </button>
+  </div>
   <h1 id="mainHeading">Transformation von Funktionen</h1>
 
   <div id="introScreen" class="screen intro-screen">
     <div class="panel">
-      <div class="control-group">
-        <div id="introLanguageTitle" class="intro-section-title">Sprache</div>
-        <div class="language-picker" role="group" aria-labelledby="introLanguageTitle">
-          <button id="langDeButton" class="language-option is-active" type="button" aria-pressed="true">
-            <span class="language-flag" aria-hidden="true">🇩🇪</span>
-            <span class="language-copy">
-              <span class="language-name">Deutsch</span>
-            </span>
-          </button>
-          <button id="langEnButton" class="language-option" type="button" aria-pressed="false">
-            <span class="language-flag" aria-hidden="true">🇬🇧</span>
-            <span class="language-copy">
-              <span class="language-name">English</span>
-            </span>
-          </button>
-        </div>
-      </div>
-
       <div class="control-group">
         <label id="introTransformationsTitle">Wähle die Transformationen, die kombiniert werden sollen</label>
         <div class="intro-option-list">

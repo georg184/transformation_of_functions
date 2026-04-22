@@ -28,7 +28,6 @@ const controls = {
   introScreen: document.getElementById('introScreen'),
   appScreen: document.getElementById('appScreen'),
   startButton: document.getElementById('startButton'),
-  introLanguageTitle: document.getElementById('introLanguageTitle'),
   langDeButton: document.getElementById('langDeButton'),
   langEnButton: document.getElementById('langEnButton'),
   introTransformationsTitle: document.getElementById('introTransformationsTitle'),
@@ -250,7 +249,6 @@ function applyLanguage() {
   document.title = texts.pageTitle;
 
   controls.mainHeading.textContent = texts.heading;
-  controls.introLanguageTitle.textContent = texts.intro.language;
   controls.introTransformationsTitle.textContent = texts.intro.chooseTransformations;
   controls.introALabel.textContent = texts.intro.transformations.a;
   controls.introDLabel.textContent = texts.intro.transformations.d;
