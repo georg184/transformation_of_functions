@@ -3,6 +3,7 @@ let appletBuildStarted = false;
 let lastValidActiveD = 1;
 let currentLanguage = 'de';
 let currentView = 'intro';
+const LANGUAGE_STORAGE_KEY = 'transformation-of-functions-language';
 const TRANSFORMED_COLOR = {
   r: 46,
   g: 160,
@@ -208,6 +209,26 @@ function getTextBundle() {
   return TEXT[currentLanguage];
 }
 
+function readStoredLanguage() {
+  try {
+    const storedLanguage = window.sessionStorage.getItem(LANGUAGE_STORAGE_KEY);
+    if (storedLanguage === 'de' || storedLanguage === 'en') {
+      return storedLanguage;
+    }
+  } catch (error) {
+    console.warn('Could not read stored language:', error);
+  }
+  return null;
+}
+
+function persistLanguage() {
+  try {
+    window.sessionStorage.setItem(LANGUAGE_STORAGE_KEY, currentLanguage);
+  } catch (error) {
+    console.warn('Could not persist language:', error);
+  }
+}
+
 function buildPresetOptionsHtml(includePlaceholder) {
   const texts = getTextBundle();
   const options = [];
@@ -290,6 +311,7 @@ function applyLanguage() {
 
 function setLanguage(language) {
   currentLanguage = language === 'en' ? 'en' : 'de';
+  persistLanguage();
   applyLanguage();
   syncHistoryState();
 }
@@ -300,8 +322,7 @@ function syncHistoryState() {
   }
   window.history.replaceState(
     {
-      view: currentView,
-      lang: currentLanguage
+      view: currentView
     },
     '',
     window.location.href
@@ -314,8 +335,7 @@ function pushHistoryState(view) {
   }
   window.history.pushState(
     {
-      view,
-      lang: currentLanguage
+      view
     },
     '',
     window.location.href
@@ -1201,11 +1221,7 @@ controls.langEnButton.addEventListener('click', function() {
 });
 
 window.addEventListener('popstate', function(event) {
-  const nextState = event.state || { view: 'intro', lang: currentLanguage };
-  if (nextState.lang && nextState.lang !== currentLanguage) {
-    currentLanguage = nextState.lang === 'en' ? 'en' : 'de';
-    applyLanguage();
-  }
+  const nextState = event.state || { view: 'intro' };
 
   if (nextState.view === 'app') {
     showAppScreen({
@@ -1220,11 +1236,13 @@ window.addEventListener('popstate', function(event) {
 });
 
 const initialState = window.history && window.history.state ? window.history.state : null;
-if (initialState && initialState.lang) {
-  currentLanguage = initialState.lang === 'en' ? 'en' : 'de';
+const storedLanguage = readStoredLanguage();
+if (storedLanguage) {
+  currentLanguage = storedLanguage;
 }
 
 applyLanguage();
+persistLanguage();
 if (initialState && initialState.view === 'app') {
   showIntroScreen();
   pushHistoryState('intro');
