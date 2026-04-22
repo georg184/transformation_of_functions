@@ -184,6 +184,7 @@ code {
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
 }
 
 .diagram-block-compact {
@@ -191,8 +192,20 @@ code {
 }
 
 .diagram-block-function {
-  min-width: 154px;
-  border-color: var(--accent);
+  min-width: 144px;
+  border-color: var(--text);
+  color: var(--text);
+}
+
+.diagram-block-function::before {
+  content: 'f';
+  position: absolute;
+  left: 50%;
+  top: -22px;
+  transform: translateX(-50%);
+  color: var(--text);
+  font-weight: 700;
+  line-height: 1;
 }
 
 .diagram-block-math,
