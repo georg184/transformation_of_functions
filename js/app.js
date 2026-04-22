@@ -1,6 +1,11 @@
 let ggbApplet = null;
 let appletBuildStarted = false;
 let lastValidActiveD = 1;
+const TRANSFORMED_COLOR = {
+  r: 46,
+  g: 160,
+  b: 67
+};
 
 const DEFAULT_VIEW = {
   xmin: -10,
@@ -179,14 +184,27 @@ function buildDiagramBlockHtml(blockLatex, className = '', labelLatex = '') {
   return `<div class="${classes}">${labelHtml}${buildDiagramMathHtml(blockLatex, 'diagram-block-math')}</div>`;
 }
 
-function buildDiagramSegmentHtml(labelLatex = '') {
+function buildDiagramSegmentHtml(options = {}) {
+  const {
+    labelLatex = '',
+    size = 'full',
+    arrow = true
+  } = options;
   const labelHtml = labelLatex
     ? buildDiagramMathHtml(labelLatex, 'diagram-connector-label')
     : '';
-  const segmentClass = labelLatex
-    ? 'diagram-segment'
-    : 'diagram-segment diagram-segment-compact';
-  return `<span class="${segmentClass}">${labelHtml}<span class="diagram-connector" aria-hidden="true"></span></span>`;
+  const segmentClasses = ['diagram-segment'];
+  if (size === 'compact') {
+    segmentClasses.push('diagram-segment-compact');
+  }
+  if (size === 'half') {
+    segmentClasses.push('diagram-segment-half');
+  }
+  const connectorClasses = ['diagram-connector'];
+  if (!arrow) {
+    connectorClasses.push('diagram-connector-no-arrow');
+  }
+  return `<span class="${segmentClasses.join(' ')}">${labelHtml}<span class="${connectorClasses.join(' ')}" aria-hidden="true"></span></span>`;
 }
 
 function buildDiagramItems(state) {
@@ -247,20 +265,26 @@ function updateBlockDiagram() {
   const state = getState();
   const items = buildDiagramItems(state);
   const outputLatex = buildFunctionExpressionLatex(state, false);
-  const parts = [
-    `<div class="diagram-terminal diagram-terminal-input">${buildDiagramMathHtml('x', 'diagram-terminal-math')}</div>`,
-    buildDiagramSegmentHtml()
+  const groupParts = [
+    buildDiagramSegmentHtml({ size: 'half', arrow: true })
   ];
 
   items.forEach(function(item, index) {
-    parts.push(buildDiagramBlockHtml(item.blockLatex, item.className || '', item.labelLatex || ''));
+    groupParts.push(buildDiagramBlockHtml(item.blockLatex, item.className || '', item.labelLatex || ''));
 
     if (index < items.length - 1) {
-      parts.push(buildDiagramSegmentHtml(item.outputLatex || ''));
+      groupParts.push(buildDiagramSegmentHtml({ labelLatex: item.outputLatex || '' }));
     }
   });
 
-  parts.push(buildDiagramSegmentHtml());
+  groupParts.push(buildDiagramSegmentHtml({ size: 'half', arrow: false }));
+  const parts = [
+    `<div class="diagram-terminal diagram-terminal-input">${buildDiagramMathHtml('x', 'diagram-terminal-math')}</div>`,
+    buildDiagramSegmentHtml({ size: 'half', arrow: false }),
+    `<div class="diagram-group">${buildDiagramMathHtml('g', 'diagram-group-label')}<div class="diagram-group-flow">${groupParts.join('')}</div></div>`,
+    buildDiagramSegmentHtml({ size: 'half', arrow: true })
+  ];
+
   parts.push(
     `<div class="diagram-terminal diagram-terminal-output">${buildDiagramMathHtml(outputLatex, 'diagram-terminal-math')}</div>`
   );
@@ -737,7 +761,7 @@ function initConstruction() {
   ggbApplet.setLabelVisible('f', true);
   ggbApplet.setLabelVisible('g', true);
   ggbApplet.setColor('f', 0, 0, 0);
-  ggbApplet.setColor('g', 0, 102, 204);
+  ggbApplet.setColor('g', TRANSFORMED_COLOR.r, TRANSFORMED_COLOR.g, TRANSFORMED_COLOR.b);
   ggbApplet.setLineThickness('f', 6);
   ggbApplet.setLineThickness('g', 7);
   restoreDefaultView();
@@ -816,7 +840,7 @@ function applyParameters() {
 
   ggbApplet.setCaption('g', 'g');
   ggbApplet.setLabelVisible('g', true);
-  ggbApplet.setColor('g', 0, 102, 204);
+  ggbApplet.setColor('g', TRANSFORMED_COLOR.r, TRANSFORMED_COLOR.g, TRANSFORMED_COLOR.b);
   return true;
 }
 

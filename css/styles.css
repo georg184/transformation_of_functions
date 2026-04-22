@@ -5,6 +5,8 @@
   --bg: #ffffff;
   --panel: #f6f8fa;
   --accent: #0969da;
+  --transformed: #2ea043;
+  --transformed-soft: rgba(46, 160, 67, 0.08);
   --danger: #b42318;
 }
 
@@ -168,8 +170,33 @@ code {
   align-items: center;
   gap: 0;
   min-width: max-content;
-  min-height: 108px;
-  padding-top: 34px;
+  min-height: 132px;
+  padding-top: 20px;
+}
+
+.diagram-group {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  padding: 34px 0 12px;
+  border: 2px solid var(--transformed);
+  border-radius: 16px;
+  background: var(--transformed-soft);
+}
+
+.diagram-group-flow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+}
+
+.diagram-group-label {
+  position: absolute;
+  left: 50%;
+  top: -22px;
+  transform: translateX(-50%);
+  color: var(--transformed);
+  line-height: 1;
 }
 
 .diagram-block {
@@ -245,11 +272,20 @@ code {
   min-width: 52px;
 }
 
+.diagram-segment-half {
+  width: 26px;
+  min-width: 26px;
+}
+
 .diagram-connector {
   position: relative;
   width: 100%;
   height: 0;
   border-top: 2px solid var(--muted);
+}
+
+.diagram-connector-no-arrow::after {
+  display: none;
 }
 
 .diagram-connector::after {
