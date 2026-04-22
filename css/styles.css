@@ -197,14 +197,12 @@ code {
   color: var(--text);
 }
 
-.diagram-block-function::before {
-  content: 'f';
+.diagram-block-top-label {
   position: absolute;
   left: 50%;
   top: -22px;
   transform: translateX(-50%);
   color: var(--text);
-  font-weight: 700;
   line-height: 1;
 }
 

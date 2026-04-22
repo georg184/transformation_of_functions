@@ -171,9 +171,12 @@ function buildDiagramMathHtml(latex, className) {
   return `<span class="${className} mathjax-inline">\\(${latex}\\)</span>`;
 }
 
-function buildDiagramBlockHtml(blockLatex, className = '') {
+function buildDiagramBlockHtml(blockLatex, className = '', labelLatex = '') {
   const classes = className ? `diagram-block ${className}` : 'diagram-block';
-  return `<div class="${classes}">${buildDiagramMathHtml(blockLatex, 'diagram-block-math')}</div>`;
+  const labelHtml = labelLatex
+    ? buildDiagramMathHtml(labelLatex, 'diagram-block-top-label')
+    : '';
+  return `<div class="${classes}">${labelHtml}${buildDiagramMathHtml(blockLatex, 'diagram-block-math')}</div>`;
 }
 
 function buildDiagramSegmentHtml(labelLatex = '') {
@@ -215,6 +218,7 @@ function buildDiagramItems(state) {
 
   items.push({
     className: 'diagram-block-function',
+    labelLatex: 'f',
     blockLatex: String.raw`\overline{x} \mapsto f\!\left(\overline{x}\right)`,
     outputLatex: buildFunctionExpressionLatex(partialState, false)
   });
@@ -249,7 +253,7 @@ function updateBlockDiagram() {
   ];
 
   items.forEach(function(item, index) {
-    parts.push(buildDiagramBlockHtml(item.blockLatex, item.className || ''));
+    parts.push(buildDiagramBlockHtml(item.blockLatex, item.className || '', item.labelLatex || ''));
 
     if (index < items.length - 1) {
       parts.push(buildDiagramSegmentHtml(item.outputLatex || ''));
