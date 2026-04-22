@@ -227,9 +227,22 @@
 
     .param-row {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) 90px;
+      grid-template-columns: minmax(0, 1fr) 140px;
       gap: 10px;
       align-items: center;
+    }
+
+    .param-value {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: 8px;
+      align-items: center;
+    }
+
+    .param-value-name {
+      color: var(--accent);
+      font-weight: 700;
+      white-space: nowrap;
     }
 
     .buttons {
@@ -343,7 +356,7 @@
       </div>
 
       <div class="control-group">
-        <div class="param-title">Parameter</div>
+        <div class="param-title">Transformationen</div>
 
         <div class="param-list">
           <div class="param-item">
@@ -352,13 +365,14 @@
             </div>
             <div class="param-body">
               <div class="param-label">
-                <span class="param-name">a</span>
-                <span class="param-sep">:</span>
-                <span class="param-desc">Skalierung in y-Richtung</span>
+                <span class="param-desc">Skalierung in y-Richtung um den Faktor a</span>
               </div>
               <div class="param-row">
                 <input id="aRange" type="range" min="-5" max="5" step="0.1" value="1" />
-                <input id="aNumber" type="number" min="-5" max="5" step="0.1" value="1" />
+                <div class="param-value">
+                  <span class="param-value-name">a =</span>
+                  <input id="aNumber" type="number" min="-5" max="5" step="0.1" value="1" />
+                </div>
               </div>
             </div>
           </div>
@@ -369,13 +383,14 @@
             </div>
             <div class="param-body">
               <div class="param-label">
-                <span class="param-name">d</span>
-                <span class="param-sep">:</span>
-                <span class="param-desc">Skalierung in x-Richtung, mit <code>d ≠ 0</code></span>
+                <span class="param-desc">Skalierung in x-Richtung um den Faktor d</span>
               </div>
               <div class="param-row">
                 <input id="dRange" type="range" min="-5" max="5" step="0.1" value="1" />
-                <input id="dNumber" type="number" min="-5" max="5" step="0.1" value="1" />
+                <div class="param-value">
+                  <span class="param-value-name">d =</span>
+                  <input id="dNumber" type="number" min="-5" max="5" step="0.1" value="1" />
+                </div>
               </div>
             </div>
           </div>
@@ -386,13 +401,14 @@
             </div>
             <div class="param-body">
               <div class="param-label">
-                <span class="param-name">u</span>
-                <span class="param-sep">:</span>
-                <span class="param-desc">Verschiebung in x-Richtung</span>
+                <span class="param-desc">Verschiebung in x-Richtung um u</span>
               </div>
               <div class="param-row">
                 <input id="uRange" type="range" min="-10" max="10" step="0.1" value="0" />
-                <input id="uNumber" type="number" min="-10" max="10" step="0.1" value="0" />
+                <div class="param-value">
+                  <span class="param-value-name">u =</span>
+                  <input id="uNumber" type="number" min="-10" max="10" step="0.1" value="0" />
+                </div>
               </div>
             </div>
           </div>
@@ -403,13 +419,14 @@
             </div>
             <div class="param-body">
               <div class="param-label">
-                <span class="param-name">v</span>
-                <span class="param-sep">:</span>
-                <span class="param-desc">Verschiebung in y-Richtung</span>
+                <span class="param-desc">Verschiebung in y-Richtung um v</span>
               </div>
               <div class="param-row">
                 <input id="vRange" type="range" min="-10" max="10" step="0.1" value="0" />
-                <input id="vNumber" type="number" min="-10" max="10" step="0.1" value="0" />
+                <div class="param-value">
+                  <span class="param-value-name">v =</span>
+                  <input id="vNumber" type="number" min="-10" max="10" step="0.1" value="0" />
+                </div>
               </div>
             </div>
           </div>
@@ -531,16 +548,16 @@
     function buildSummaryItems(state) {
       const items = [];
       if (state.useA) {
-        items.push('in y-Richtung mit Faktor <span class="inline-param">a</span> skaliert');
+        items.push('Skalierung in y-Richtung um den Faktor <span class="inline-param">a</span>');
       }
       if (state.useD) {
-        items.push('in x-Richtung mit Faktor <span class="inline-param">d</span> skaliert');
+        items.push('Skalierung in x-Richtung um den Faktor <span class="inline-param">d</span>');
       }
       if (state.useU) {
-        items.push('um <span class="inline-param">u</span> in x-Richtung verschoben');
+        items.push('Verschiebung in x-Richtung um <span class="inline-param">u</span>');
       }
       if (state.useV) {
-        items.push('um <span class="inline-param">v</span> in y-Richtung verschoben');
+        items.push('Verschiebung in y-Richtung um <span class="inline-param">v</span>');
       }
       return items;
     }
