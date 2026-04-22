@@ -109,6 +109,55 @@ code {
   min-width: 260px;
 }
 
+.intro-section-title {
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.language-picker {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.language-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: linear-gradient(180deg, #ffffff, #f8fafc);
+  box-shadow: 0 8px 18px rgba(31, 35, 40, 0.06);
+  transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.language-option:hover {
+  filter: none;
+  transform: translateY(-1px);
+  border-color: #b6c5d6;
+}
+
+.language-option.is-active {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(9, 105, 218, 0.12), 0 10px 24px rgba(31, 35, 40, 0.08);
+}
+
+.language-flag {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.language-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.language-name {
+  font-weight: 700;
+}
+
 .intro-option-list {
   display: flex;
   flex-direction: column;
@@ -590,6 +639,10 @@ button:disabled {
   .app-top-group {
     width: 100%;
     flex-wrap: wrap;
+  }
+
+  .language-picker {
+    grid-template-columns: 1fr;
   }
 
   .app-top-input,

@@ -1,6 +1,7 @@
 let ggbApplet = null;
 let appletBuildStarted = false;
 let lastValidActiveD = 1;
+let currentLanguage = 'de';
 const TRANSFORMED_COLOR = {
   r: 46,
   g: 160,
@@ -22,17 +23,30 @@ const DEFAULT_PARAMETERS = {
 };
 
 const controls = {
+  mainHeading: document.getElementById('mainHeading'),
   introScreen: document.getElementById('introScreen'),
   appScreen: document.getElementById('appScreen'),
   startButton: document.getElementById('startButton'),
+  introLanguageTitle: document.getElementById('introLanguageTitle'),
+  langDeButton: document.getElementById('langDeButton'),
+  langEnButton: document.getElementById('langEnButton'),
+  introTransformationsTitle: document.getElementById('introTransformationsTitle'),
   introFunctionPreset: document.getElementById('introFunctionPreset'),
   introAEnabled: document.getElementById('introAEnabled'),
   introDEnabled: document.getElementById('introDEnabled'),
   introUEnabled: document.getElementById('introUEnabled'),
   introVEnabled: document.getElementById('introVEnabled'),
+  introALabel: document.getElementById('introALabel'),
+  introDLabel: document.getElementById('introDLabel'),
+  introULabel: document.getElementById('introULabel'),
+  introVLabel: document.getElementById('introVLabel'),
+  introFunctionTitle: document.getElementById('introFunctionTitle'),
+  introNote: document.getElementById('introNote'),
 
   fInput: document.getElementById('fInput'),
   functionPreset: document.getElementById('functionPreset'),
+  appTopSourceLabel: document.getElementById('appTopSourceLabel'),
+  appTopFunctionTypeLabel: document.getElementById('appTopFunctionTypeLabel'),
 
   aEnabled: document.getElementById('aEnabled'),
   dEnabled: document.getElementById('dEnabled'),
@@ -50,9 +64,135 @@ const controls = {
 
   resetButton: document.getElementById('resetButton'),
   status: document.getElementById('status'),
+  formulaTitle: document.getElementById('formulaTitle'),
   formulaMain: document.getElementById('formulaMain'),
   formulaPreview: document.getElementById('formulaPreview'),
+  formulaPreviewTitle: document.getElementById('formulaPreviewTitle'),
+  paramTitle: document.getElementById('paramTitle'),
+  aDescription: document.getElementById('aDescription'),
+  dDescription: document.getElementById('dDescription'),
+  uDescription: document.getElementById('uDescription'),
+  vDescription: document.getElementById('vDescription'),
+  diagramTitle: document.getElementById('diagramTitle'),
+  diagramContainer: document.getElementById('diagramContainer'),
   diagramFlow: document.getElementById('diagramFlow')
+};
+
+const FUNCTION_PRESETS = [
+  { value: 'x', de: 'Lineare Funktion: x', en: 'Linear function: x' },
+  { value: 'x^2', de: 'Quadratische Funktion: x^2', en: 'Quadratic function: x^2' },
+  { value: 'x^3', de: 'Kubische Funktion: x^3', en: 'Cubic function: x^3' },
+  { value: 'sqrt(x)', de: 'Wurzelfunktion: sqrt(x)', en: 'Square root function: sqrt(x)' },
+  { value: '1/x', de: 'Kehrwertfunktion: 1/x', en: 'Reciprocal function: 1/x' },
+  { value: 'abs(x)', de: 'Betragsfunktion: abs(x)', en: 'Absolute value function: abs(x)' },
+  { value: 'sin(x)', de: 'Sinusfunktion: sin(x)', en: 'Sine function: sin(x)' },
+  { value: 'cos(x)', de: 'Kosinusfunktion: cos(x)', en: 'Cosine function: cos(x)' },
+  { value: 'exp(x)', de: 'Exponentialfunktion: exp(x)', en: 'Exponential function: exp(x)' },
+  { value: 'ln(x)', de: 'Logarithmusfunktion: ln(x)', en: 'Logarithmic function: ln(x)' },
+  { value: '1/(x^2+1)', de: 'Gebrochen-rationale Funktion: 1/(x^2+1)', en: 'Rational function: 1/(x^2+1)' }
+];
+
+const TEXT = {
+  de: {
+    pageTitle: 'Transformation von Funktionen',
+    heading: 'Transformation von Funktionen',
+    intro: {
+      language: 'Sprache',
+      chooseTransformations: 'Wähle die Transformationen, die kombiniert werden sollen',
+      transformations: {
+        a: 'Skalierung in y-Richtung',
+        d: 'Skalierung in x-Richtung',
+        u: 'Verschiebung in x-Richtung',
+        v: 'Verschiebung in y-Richtung'
+      },
+      chooseFunction: 'Wähle die Funktion',
+      note: 'Hinweis: Sämtliche Einstellungen lassen sich auch in der App ändern.',
+      start: 'Start'
+    },
+    app: {
+      sourceFunction: 'Ausgangsfunktion:',
+      selectFunctionType: 'Funktionstyp auswählen:',
+      transformedFunction: 'Transformierte Funktion:',
+      transformations: 'Transformationen',
+      transformationDescriptions: {
+        a: 'Skalierung in y-Richtung um den Faktor <span class="param-name">a</span>',
+        d: 'Skalierung in x-Richtung um den Faktor <span class="param-name">d</span> ≠ 0',
+        u: 'Verschiebung in x-Richtung um <span class="param-name">u</span>',
+        v: 'Verschiebung in y-Richtung um <span class="param-name">v</span>'
+      },
+      reset: 'Zurücksetzen',
+      current: 'Aktuell:',
+      blockDiagram: 'Blockschaltbild'
+    },
+    selectPlaceholder: 'Bitte wählen …',
+    status: {
+      invalidDNumber: 'Der Parameter d muss eine Zahl sein, wenn die x-Skalierung aktiviert ist.',
+      invalidDZero: 'Der Parameter d darf nicht 0 sein, wenn die x-Skalierung aktiviert ist.',
+      enterFunction: 'Bitte gib einen Funktionsterm für f(x) ein.',
+      invalidFunction: 'Der eingegebene Term für f(x) konnte von GeoGebra nicht interpretiert werden.',
+      transformedFunctionFailed: 'Die transformierte Funktion g(x) konnte nicht erzeugt werden.'
+    },
+    aria: {
+      functionInput: 'Funktionsvorschrift für f(x)',
+      transformedFunction: 'Transformierte Funktion',
+      currentFunction: 'Aktuelle Funktion',
+      diagram: 'Blockschaltbild der aktivierten Transformationen',
+      enableA: 'a aktivieren',
+      enableD: 'd aktivieren',
+      enableU: 'u aktivieren',
+      enableV: 'v aktivieren'
+    }
+  },
+  en: {
+    pageTitle: 'Transformations of Functions',
+    heading: 'Transformations of Functions',
+    intro: {
+      language: 'Language',
+      chooseTransformations: 'Choose the transformations to combine',
+      transformations: {
+        a: 'Scaling in y-direction',
+        d: 'Scaling in x-direction',
+        u: 'Translation in x-direction',
+        v: 'Translation in y-direction'
+      },
+      chooseFunction: 'Choose the function',
+      note: 'Note: All settings can also be changed inside the app.',
+      start: 'Start'
+    },
+    app: {
+      sourceFunction: 'Source function:',
+      selectFunctionType: 'Select function type:',
+      transformedFunction: 'Transformed function:',
+      transformations: 'Transformations',
+      transformationDescriptions: {
+        a: 'Scaling in y-direction by factor <span class="param-name">a</span>',
+        d: 'Scaling in x-direction by factor <span class="param-name">d</span> ≠ 0',
+        u: 'Translation in x-direction by <span class="param-name">u</span>',
+        v: 'Translation in y-direction by <span class="param-name">v</span>'
+      },
+      reset: 'Reset',
+      current: 'Current:',
+      blockDiagram: 'Block diagram'
+    },
+    selectPlaceholder: 'Please choose …',
+    status: {
+      invalidDNumber: 'Parameter d must be a number when x-scaling is enabled.',
+      invalidDZero: 'Parameter d must not be 0 when x-scaling is enabled.',
+      enterFunction: 'Please enter a function term for f(x).',
+      invalidFunction: 'The entered term for f(x) could not be interpreted by GeoGebra.',
+      transformedFunctionFailed: 'The transformed function g(x) could not be created.'
+    },
+    aria: {
+      functionInput: 'Function term for f(x)',
+      transformedFunction: 'Transformed function',
+      currentFunction: 'Current function',
+      diagram: 'Block diagram of the active transformations',
+      enableA: 'Enable a',
+      enableD: 'Enable d',
+      enableU: 'Enable u',
+      enableV: 'Enable v'
+    }
+  }
 };
 
 function setStatus(message, isError = false) {
@@ -62,6 +202,96 @@ function setStatus(message, isError = false) {
 
 function clearStatus() {
   setStatus('');
+}
+
+function getTextBundle() {
+  return TEXT[currentLanguage];
+}
+
+function buildPresetOptionsHtml(includePlaceholder) {
+  const texts = getTextBundle();
+  const options = [];
+
+  if (includePlaceholder) {
+    options.push(`<option value="">${texts.selectPlaceholder}</option>`);
+  }
+
+  for (const preset of FUNCTION_PRESETS) {
+    options.push(`<option value="${preset.value}">${preset[currentLanguage]}</option>`);
+  }
+
+  return options.join('');
+}
+
+function refreshPresetOptions(selectEl, includePlaceholder) {
+  const currentValue = selectEl.value;
+  selectEl.innerHTML = buildPresetOptionsHtml(includePlaceholder);
+  const availableValues = new Set(FUNCTION_PRESETS.map(function(preset) {
+    return preset.value;
+  }));
+  if (currentValue === '' || availableValues.has(currentValue)) {
+    selectEl.value = currentValue;
+  }
+}
+
+function updateLanguageButtons() {
+  const isGerman = currentLanguage === 'de';
+  controls.langDeButton.classList.toggle('is-active', isGerman);
+  controls.langEnButton.classList.toggle('is-active', !isGerman);
+  controls.langDeButton.setAttribute('aria-pressed', isGerman ? 'true' : 'false');
+  controls.langEnButton.setAttribute('aria-pressed', isGerman ? 'false' : 'true');
+}
+
+function applyLanguage() {
+  const texts = getTextBundle();
+
+  document.documentElement.lang = currentLanguage;
+  document.title = texts.pageTitle;
+
+  controls.mainHeading.textContent = texts.heading;
+  controls.introLanguageTitle.textContent = texts.intro.language;
+  controls.introTransformationsTitle.textContent = texts.intro.chooseTransformations;
+  controls.introALabel.textContent = texts.intro.transformations.a;
+  controls.introDLabel.textContent = texts.intro.transformations.d;
+  controls.introULabel.textContent = texts.intro.transformations.u;
+  controls.introVLabel.textContent = texts.intro.transformations.v;
+  controls.introFunctionTitle.textContent = texts.intro.chooseFunction;
+  controls.introNote.textContent = texts.intro.note;
+  controls.startButton.textContent = texts.intro.start;
+
+  controls.appTopSourceLabel.textContent = texts.app.sourceFunction;
+  controls.appTopFunctionTypeLabel.textContent = texts.app.selectFunctionType;
+  controls.formulaTitle.textContent = texts.app.transformedFunction;
+  controls.paramTitle.textContent = texts.app.transformations;
+  controls.aDescription.innerHTML = texts.app.transformationDescriptions.a;
+  controls.dDescription.innerHTML = texts.app.transformationDescriptions.d;
+  controls.uDescription.innerHTML = texts.app.transformationDescriptions.u;
+  controls.vDescription.innerHTML = texts.app.transformationDescriptions.v;
+  controls.resetButton.textContent = texts.app.reset;
+  controls.formulaPreviewTitle.textContent = texts.app.current;
+  controls.diagramTitle.textContent = texts.app.blockDiagram;
+
+  controls.fInput.setAttribute('aria-label', texts.aria.functionInput);
+  controls.formulaMain.setAttribute('aria-label', texts.aria.transformedFunction);
+  controls.formulaPreview.setAttribute('aria-label', texts.aria.currentFunction);
+  controls.diagramContainer.setAttribute('aria-label', texts.aria.diagram);
+  controls.introAEnabled.setAttribute('aria-label', texts.aria.enableA);
+  controls.introDEnabled.setAttribute('aria-label', texts.aria.enableD);
+  controls.introUEnabled.setAttribute('aria-label', texts.aria.enableU);
+  controls.introVEnabled.setAttribute('aria-label', texts.aria.enableV);
+  controls.aEnabled.setAttribute('aria-label', texts.aria.enableA);
+  controls.dEnabled.setAttribute('aria-label', texts.aria.enableD);
+  controls.uEnabled.setAttribute('aria-label', texts.aria.enableU);
+  controls.vEnabled.setAttribute('aria-label', texts.aria.enableV);
+
+  refreshPresetOptions(controls.introFunctionPreset, false);
+  refreshPresetOptions(controls.functionPreset, true);
+  updateLanguageButtons();
+}
+
+function setLanguage(language) {
+  currentLanguage = language === 'en' ? 'en' : 'de';
+  applyLanguage();
 }
 
 function syncPair(rangeEl, numberEl, value) {
@@ -618,6 +848,7 @@ function updateFormulaDisplays() {
 }
 
 function validateDWhenActive() {
+  const texts = getTextBundle();
   const state = getState();
   if (!state.useD) {
     clearStatus();
@@ -627,12 +858,12 @@ function validateDWhenActive() {
   const d = Number(controls.dNumber.value);
   if (!Number.isFinite(d)) {
     syncPair(controls.dRange, controls.dNumber, lastValidActiveD);
-    setStatus('Der Parameter d muss eine Zahl sein, wenn die x-Skalierung aktiviert ist.', true);
+    setStatus(texts.status.invalidDNumber, true);
     return false;
   }
 
   if (Math.abs(d) < 1e-12) {
-    setStatus('Der Parameter d darf nicht 0 sein, wenn die x-Skalierung aktiviert ist.', true);
+    setStatus(texts.status.invalidDZero, true);
     return false;
   }
 
@@ -675,7 +906,7 @@ function buildApplet() {
     borderRadius: 12,
     errorDialogsActive: false,
     useBrowserForJS: true,
-    language: 'de',
+    language: currentLanguage,
     appletOnLoad: onAppletLoad
   };
 
@@ -740,19 +971,20 @@ function onAppletLoad(api) {
 }
 
 function applyFunction() {
+  const texts = getTextBundle();
   if (!ggbApplet) {
     return false;
   }
 
   const expr = controls.fInput.value.trim();
   if (!expr) {
-    setStatus('Bitte gib einen Funktionsterm für f(x) ein.', true);
+    setStatus(texts.status.enterFunction, true);
     return false;
   }
 
   const success = ggbApplet.evalCommand(`f(x) = ${expr}`);
   if (!success) {
-    setStatus('Der eingegebene Term für f(x) konnte von GeoGebra nicht interpretiert werden.', true);
+    setStatus(texts.status.invalidFunction, true);
     return false;
   }
 
@@ -785,6 +1017,7 @@ function buildGeoGebraExpression(state) {
 }
 
 function applyParameters() {
+  const texts = getTextBundle();
   if (!ggbApplet) {
     return false;
   }
@@ -798,7 +1031,7 @@ function applyParameters() {
 
   const success = ggbApplet.evalCommand(`g(x) = ${expr}`);
   if (!success) {
-    setStatus('Die transformierte Funktion g(x) konnte nicht erzeugt werden.', true);
+    setStatus(texts.status.transformedFunctionFailed, true);
     return false;
   }
 
@@ -903,4 +1136,13 @@ controls.functionPreset.addEventListener('change', function() {
   applyAll();
 });
 
+controls.langDeButton.addEventListener('click', function() {
+  setLanguage('de');
+});
+
+controls.langEnButton.addEventListener('click', function() {
+  setLanguage('en');
+});
+
+applyLanguage();
 controls.startButton.addEventListener('click', startFromIntro);
