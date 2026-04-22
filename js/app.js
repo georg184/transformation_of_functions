@@ -50,8 +50,6 @@ const controls = {
 
   resetButton: document.getElementById('resetButton'),
   status: document.getElementById('status'),
-  sourceFunctionLine: document.getElementById('sourceFunctionLine'),
-  transformationSummary: document.getElementById('transformationSummary'),
   formulaMain: document.getElementById('formulaMain'),
   formulaPreview: document.getElementById('formulaPreview'),
   diagramFlow: document.getElementById('diagramFlow')
@@ -153,23 +151,6 @@ function hasResettableChanges() {
 
 function updateResetButtonState() {
   controls.resetButton.disabled = !hasResettableChanges();
-}
-
-function buildSummaryItems(state) {
-  const items = [];
-  if (state.useA) {
-    items.push('Skalierung in y-Richtung um den Faktor <span class="inline-param">a</span>');
-  }
-  if (state.useD) {
-    items.push('Skalierung in x-Richtung um den Faktor <span class="inline-param">d</span> ≠ 0');
-  }
-  if (state.useU) {
-    items.push('Verschiebung in x-Richtung um <span class="inline-param">u</span>');
-  }
-  if (state.useV) {
-    items.push('Verschiebung in y-Richtung um <span class="inline-param">v</span>');
-  }
-  return items;
 }
 
 function buildDiagramMathHtml(latex, className) {
@@ -291,21 +272,6 @@ function updateBlockDiagram() {
 
   controls.diagramFlow.innerHTML = parts.join('');
   typesetElements([controls.diagramFlow]);
-}
-
-function updateSummary() {
-  const state = getState();
-  const items = buildSummaryItems(state);
-  if (items.length === 0) {
-    controls.transformationSummary.innerHTML = 'Transformationen: keine aktiv.';
-    return;
-  }
-  const label = items.length === 1 ? 'Transformation' : 'Transformationen';
-  controls.transformationSummary.innerHTML = `${label}: ${items.join(', ')}.`;
-}
-
-function updateSourceFunctionLine() {
-  renderMath(controls.sourceFunctionLine, '<span class="source-label">Ausgangsfunktion:</span> <span class="mathjax-inline">\\(x \\mapsto f(x)\\)</span>');
 }
 
 function buildArgumentLatex(state, useValues) {
@@ -734,8 +700,6 @@ function startFromIntro() {
 
   updateParameterAvailability();
   updateResetButtonState();
-  updateSourceFunctionLine();
-  updateSummary();
   updateBlockDiagram();
   updateFormulaDisplays();
 
@@ -847,7 +811,6 @@ function applyParameters() {
 function applyAll() {
   updateParameterAvailability();
   updateResetButtonState();
-  updateSummary();
   updateBlockDiagram();
   updateFormulaDisplays();
   const okF = applyFunction();
@@ -865,7 +828,6 @@ function resetAll() {
 
   lastValidActiveD = 1;
 
-  updateSummary();
   updateFormulaDisplays();
   updateResetButtonState();
   applyParameters();
@@ -917,7 +879,6 @@ for (const toggle of toggles) {
   toggle.addEventListener('change', function() {
     updateParameterAvailability();
     updateResetButtonState();
-    updateSummary();
     updateBlockDiagram();
     updateFormulaDisplays();
     applyParameters();

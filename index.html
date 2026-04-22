@@ -62,8 +62,31 @@
   </div>
 
   <div id="appScreen" class="screen app-screen hidden">
-    <p id="sourceFunctionLine" class="top-line mathjax-inline"></p>
-    <p id="transformationSummary"></p>
+    <div class="app-top-row">
+      <div class="app-top-group app-top-group-function">
+        <span class="app-top-label">Ausgangsfunktion:</span>
+        <span class="app-top-math mathjax-inline">\(x \mapsto f(x) =\)</span>
+        <input id="fInput" class="app-top-input" type="text" value="x^2" spellcheck="false" aria-label="Funktionsvorschrift für f(x)" />
+      </div>
+
+      <div class="app-top-group app-top-group-preset">
+        <label class="app-top-label" for="functionPreset">Funktionstyp auswählen:</label>
+        <select id="functionPreset" class="app-top-select">
+          <option value="">Bitte wählen …</option>
+          <option value="x">Lineare Funktion: x</option>
+          <option value="x^2" selected>Quadratische Funktion: x^2</option>
+          <option value="x^3">Kubische Funktion: x^3</option>
+          <option value="sqrt(x)">Wurzelfunktion: sqrt(x)</option>
+          <option value="1/x">Kehrwertfunktion: 1/x</option>
+          <option value="abs(x)">Betragsfunktion: abs(x)</option>
+          <option value="sin(x)">Sinusfunktion: sin(x)</option>
+          <option value="cos(x)">Kosinusfunktion: cos(x)</option>
+          <option value="exp(x)">Exponentialfunktion: exp(x)</option>
+          <option value="ln(x)">Logarithmusfunktion: ln(x)</option>
+          <option value="1/(x^2+1)">Gebrochen-rationale Funktion: 1/(x^2+1)</option>
+        </select>
+      </div>
+    </div>
 
     <div class="formula">
       <div class="formula-row">
@@ -76,29 +99,6 @@
 
     <div class="layout">
       <div class="panel">
-        <div class="control-group">
-          <label for="fInput">Funktion <span class="mathjax-inline">\(f(x)\)</span></label>
-          <input id="fInput" type="text" value="x^2" spellcheck="false" />
-
-          <div class="preset-row">
-            <label for="functionPreset">Funktionstyp auswählen</label>
-            <select id="functionPreset">
-              <option value="">Bitte wählen …</option>
-              <option value="x">Lineare Funktion: x</option>
-              <option value="x^2" selected>Quadratische Funktion: x^2</option>
-              <option value="x^3">Kubische Funktion: x^3</option>
-              <option value="sqrt(x)">Wurzelfunktion: sqrt(x)</option>
-              <option value="1/x">Kehrwertfunktion: 1/x</option>
-              <option value="abs(x)">Betragsfunktion: abs(x)</option>
-              <option value="sin(x)">Sinusfunktion: sin(x)</option>
-              <option value="cos(x)">Kosinusfunktion: cos(x)</option>
-              <option value="exp(x)">Exponentialfunktion: exp(x)</option>
-              <option value="ln(x)">Logarithmusfunktion: ln(x)</option>
-              <option value="1/(x^2+1)">Gebrochen-rationale Funktion: 1/(x^2+1)</option>
-            </select>
-          </div>
-        </div>
-
         <div class="control-group">
           <div class="param-title">Transformationen</div>
 

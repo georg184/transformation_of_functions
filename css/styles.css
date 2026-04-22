@@ -64,6 +64,51 @@ code {
   margin: 0 auto;
 }
 
+.app-top-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 28px;
+  margin-bottom: 12px;
+}
+
+.app-top-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.app-top-group-function {
+  flex: 1 1 540px;
+}
+
+.app-top-group-preset {
+  flex: 1 1 340px;
+}
+
+.app-top-label {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.app-top-math {
+  white-space: nowrap;
+}
+
+.app-top-input {
+  flex: 1 1 180px;
+  min-width: 180px;
+}
+
+.app-top-select {
+  flex: 1 1 260px;
+  min-width: 260px;
+}
+
 .intro-option-list {
   display: flex;
   flex-direction: column;
@@ -337,12 +382,6 @@ code {
   font-family: inherit;
 }
 
-.source-label {
-  font: inherit;
-  color: var(--text);
-  font-weight: 400;
-}
-
 .control-group {
   margin-bottom: 18px;
 }
@@ -361,10 +400,6 @@ label {
   color: var(--muted);
   font-size: 0.92rem;
   margin-top: 4px;
-}
-
-.preset-row {
-  margin-top: 10px;
 }
 
 select,
@@ -525,10 +560,6 @@ button:disabled {
   margin-bottom: 8px;
 }
 
-.top-line {
-  margin-bottom: 10px;
-}
-
 #ggb-element {
   width: 100%;
   min-height: 700px;
@@ -554,6 +585,17 @@ button:disabled {
 
   .formula-title {
     align-self: auto;
+  }
+
+  .app-top-group {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .app-top-input,
+  .app-top-select {
+    min-width: 0;
+    width: 100%;
   }
 
   #ggb-element {
