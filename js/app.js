@@ -49,7 +49,9 @@ const controls = {
   transformationSummary: document.getElementById('transformationSummary'),
   formulaMain: document.getElementById('formulaMain'),
   formulaMainNote: document.getElementById('formulaMainNote'),
-  formulaPreview: document.getElementById('formulaPreview')
+  formulaPreview: document.getElementById('formulaPreview'),
+  diagramLeft: document.getElementById('diagramLeft'),
+  diagramRight: document.getElementById('diagramRight')
 };
 
 function setStatus(message, isError = false) {
@@ -154,6 +156,53 @@ function buildSummaryItems(state) {
     items.push('Verschiebung in y-Richtung um <span class="inline-param">v</span>');
   }
   return items;
+}
+
+function buildDiagramChain(blocks, side) {
+  if (blocks.length === 0) {
+    return '';
+  }
+
+  const parts = [];
+
+  if (side === 'right') {
+    parts.push('<span class="diagram-arrow" aria-hidden="true">→</span>');
+  }
+
+  blocks.forEach(function(block, index) {
+    parts.push(`<div class="diagram-block">${block}</div>`);
+    if (index < blocks.length - 1) {
+      parts.push('<span class="diagram-arrow" aria-hidden="true">→</span>');
+    }
+  });
+
+  if (side === 'left') {
+    parts.push('<span class="diagram-arrow" aria-hidden="true">→</span>');
+  }
+
+  return parts.join('');
+}
+
+function updateBlockDiagram() {
+  const state = getState();
+  const leftBlocks = [];
+  const rightBlocks = [];
+
+  if (state.useU) {
+    leftBlocks.push('x |→ x-<span class="param-name">u</span>');
+  }
+  if (state.useD) {
+    leftBlocks.push('x |→ 1/<span class="param-name">d</span>·x');
+  }
+  if (state.useA) {
+    rightBlocks.push('x |→ <span class="param-name">a</span>·x');
+  }
+  if (state.useV) {
+    rightBlocks.push('x |→ x+<span class="param-name">v</span>');
+  }
+
+  controls.diagramLeft.innerHTML = buildDiagramChain(leftBlocks, 'left');
+  controls.diagramRight.innerHTML = buildDiagramChain(rightBlocks, 'right');
 }
 
 function updateSummary() {
@@ -608,6 +657,7 @@ function startFromIntro() {
   updateResetButtonState();
   updateSourceFunctionLine();
   updateSummary();
+  updateBlockDiagram();
   updateFormulaDisplays();
 
   requestAnimationFrame(function() {
@@ -719,6 +769,7 @@ function applyAll() {
   updateParameterAvailability();
   updateResetButtonState();
   updateSummary();
+  updateBlockDiagram();
   updateFormulaDisplays();
   const okF = applyFunction();
   const okP = okF && applyParameters();
@@ -788,6 +839,7 @@ for (const toggle of toggles) {
     updateParameterAvailability();
     updateResetButtonState();
     updateSummary();
+    updateBlockDiagram();
     updateFormulaDisplays();
     applyParameters();
   });
