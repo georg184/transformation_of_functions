@@ -15,6 +15,16 @@ The public version is available through GitHub Pages:
 - `js/mathjax-config.js`: MathJax configuration
 - `js/app.js`: the app logic, startup flow, and GeoGebra integration
 
+## Cache And Version Safety
+
+The page uses a shared app version in three places:
+
+- `window.GG_APP_VERSION` in `index.html`
+- `?v=...` query strings on every local CSS/JS asset
+- `APP_VERSION` at the top of `js/app.js`
+
+Whenever `index.html`, local CSS, local JavaScript, or `js/mathjax-config.js` changes, update all three places together and keep the visible version badge current. This prevents GitHub Pages or browser caches from mixing old JavaScript with new HTML.
+
 ## Local Workflow
 
 The project can be edited locally in Zed. Meaningful changes are then transferred to GitHub with Git.
