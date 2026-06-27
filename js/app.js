@@ -1,4 +1,4 @@
-const APP_VERSION = '20260619.1';
+const APP_VERSION = '20260627.1';
 if (window.GG_APP_VERSION && window.GG_APP_VERSION !== APP_VERSION) {
   document.body.innerHTML = [
     '<main style="max-width:720px;margin:40px auto;padding:20px;font-family:system-ui,sans-serif;line-height:1.45">',
@@ -15,6 +15,7 @@ let lastValidActiveD = 1;
 let currentLanguage = 'de';
 let currentView = 'intro';
 const LANGUAGE_STORAGE_KEY = 'transformation-of-functions-language';
+const SUPPORTED_LANGUAGES = ['de', 'en', 'fr'];
 const TRANSFORMED_COLOR = {
   r: 46,
   g: 160,
@@ -42,6 +43,7 @@ const controls = {
   startButton: document.getElementById('startButton'),
   langDeButton: document.getElementById('langDeButton'),
   langEnButton: document.getElementById('langEnButton'),
+  langFrButton: document.getElementById('langFrButton'),
   introTransformationsTitle: document.getElementById('introTransformationsTitle'),
   introFunctionPreset: document.getElementById('introFunctionPreset'),
   introAEnabled: document.getElementById('introAEnabled'),
@@ -90,18 +92,24 @@ const controls = {
   diagramFlow: document.getElementById('diagramFlow')
 };
 
+const languageButtons = {
+  de: controls.langDeButton,
+  en: controls.langEnButton,
+  fr: controls.langFrButton
+};
+
 const FUNCTION_PRESETS = [
-  { value: 'x', de: 'Lineare Funktion: x', en: 'Linear function: x' },
-  { value: 'x^2', de: 'Quadratische Funktion: x^2', en: 'Quadratic function: x^2' },
-  { value: 'x^3', de: 'Kubische Funktion: x^3', en: 'Cubic function: x^3' },
-  { value: 'sqrt(x)', de: 'Wurzelfunktion: sqrt(x)', en: 'Square root function: sqrt(x)' },
-  { value: '1/x', de: 'Kehrwertfunktion: 1/x', en: 'Reciprocal function: 1/x' },
-  { value: 'abs(x)', de: 'Betragsfunktion: abs(x)', en: 'Absolute value function: abs(x)' },
-  { value: 'sin(x)', de: 'Sinusfunktion: sin(x)', en: 'Sine function: sin(x)' },
-  { value: 'cos(x)', de: 'Kosinusfunktion: cos(x)', en: 'Cosine function: cos(x)' },
-  { value: 'exp(x)', de: 'Exponentialfunktion: exp(x)', en: 'Exponential function: exp(x)' },
-  { value: 'ln(x)', de: 'Logarithmusfunktion: ln(x)', en: 'Logarithmic function: ln(x)' },
-  { value: '1/(x^2+1)', de: 'Gebrochen-rationale Funktion: 1/(x^2+1)', en: 'Rational function: 1/(x^2+1)' }
+  { value: 'x', de: 'Lineare Funktion: x', en: 'Linear function: x', fr: 'Fonction linéaire : x' },
+  { value: 'x^2', de: 'Quadratische Funktion: x^2', en: 'Quadratic function: x^2', fr: 'Fonction quadratique : x^2' },
+  { value: 'x^3', de: 'Kubische Funktion: x^3', en: 'Cubic function: x^3', fr: 'Fonction cubique : x^3' },
+  { value: 'sqrt(x)', de: 'Wurzelfunktion: sqrt(x)', en: 'Square root function: sqrt(x)', fr: 'Fonction racine carrée : sqrt(x)' },
+  { value: '1/x', de: 'Kehrwertfunktion: 1/x', en: 'Reciprocal function: 1/x', fr: 'Fonction inverse : 1/x' },
+  { value: 'abs(x)', de: 'Betragsfunktion: abs(x)', en: 'Absolute value function: abs(x)', fr: 'Fonction valeur absolue : abs(x)' },
+  { value: 'sin(x)', de: 'Sinusfunktion: sin(x)', en: 'Sine function: sin(x)', fr: 'Fonction sinus : sin(x)' },
+  { value: 'cos(x)', de: 'Kosinusfunktion: cos(x)', en: 'Cosine function: cos(x)', fr: 'Fonction cosinus : cos(x)' },
+  { value: 'exp(x)', de: 'Exponentialfunktion: exp(x)', en: 'Exponential function: exp(x)', fr: 'Fonction exponentielle : exp(x)' },
+  { value: 'ln(x)', de: 'Logarithmusfunktion: ln(x)', en: 'Logarithmic function: ln(x)', fr: 'Fonction logarithme : ln(x)' },
+  { value: '1/(x^2+1)', de: 'Gebrochen-rationale Funktion: 1/(x^2+1)', en: 'Rational function: 1/(x^2+1)', fr: 'Fonction rationnelle : 1/(x^2+1)' }
 ];
 
 const TEXT = {
@@ -204,6 +212,56 @@ const TEXT = {
       enableU: 'Enable u',
       enableV: 'Enable v'
     }
+  },
+  fr: {
+    pageTitle: 'Transformations de fonctions',
+    heading: 'Transformations de fonctions',
+    intro: {
+      language: 'Langue',
+      chooseTransformations: 'Choisissez les transformations à combiner',
+      transformations: {
+        a: 'Mise à l’échelle dans la direction y',
+        d: 'Mise à l’échelle dans la direction x',
+        u: 'Translation dans la direction x',
+        v: 'Translation dans la direction y'
+      },
+      chooseFunction: 'Choisissez la fonction',
+      note: 'Remarque : tous les réglages peuvent aussi être modifiés dans l’application.',
+      start: 'Démarrer'
+    },
+    app: {
+      sourceFunction: 'Fonction de départ :',
+      selectFunctionType: 'Choisir le type de fonction :',
+      transformedFunction: 'Fonction transformée :',
+      transformations: 'Transformations',
+      transformationDescriptions: {
+        a: 'Mise à l’échelle dans la direction y par le facteur <span class="param-name">a</span>',
+        d: 'Mise à l’échelle dans la direction x par le facteur <span class="param-name">d</span> ≠ 0',
+        u: 'Translation dans la direction x de <span class="param-name">u</span>',
+        v: 'Translation dans la direction y de <span class="param-name">v</span>'
+      },
+      reset: 'Réinitialiser',
+      current: 'Actuel :',
+      blockDiagram: 'Diagramme en blocs'
+    },
+    selectPlaceholder: 'Veuillez choisir …',
+    status: {
+      invalidDNumber: 'Le paramètre d doit être un nombre lorsque la mise à l’échelle en x est activée.',
+      invalidDZero: 'Le paramètre d ne doit pas être 0 lorsque la mise à l’échelle en x est activée.',
+      enterFunction: 'Veuillez saisir un terme pour f(x).',
+      invalidFunction: 'Le terme saisi pour f(x) n’a pas pu être interprété par GeoGebra.',
+      transformedFunctionFailed: 'La fonction transformée g(x) n’a pas pu être créée.'
+    },
+    aria: {
+      functionInput: 'Terme de la fonction pour f(x)',
+      transformedFunction: 'Fonction transformée',
+      currentFunction: 'Fonction actuelle',
+      diagram: 'Diagramme en blocs des transformations actives',
+      enableA: 'Activer a',
+      enableD: 'Activer d',
+      enableU: 'Activer u',
+      enableV: 'Activer v'
+    }
   }
 };
 
@@ -220,10 +278,14 @@ function getTextBundle() {
   return TEXT[currentLanguage];
 }
 
+function normalizeLanguage(language) {
+  return SUPPORTED_LANGUAGES.includes(language) ? language : 'de';
+}
+
 function readStoredLanguage() {
   try {
     const storedLanguage = window.sessionStorage.getItem(LANGUAGE_STORAGE_KEY);
-    if (storedLanguage === 'de' || storedLanguage === 'en') {
+    if (SUPPORTED_LANGUAGES.includes(storedLanguage)) {
       return storedLanguage;
     }
   } catch (error) {
@@ -249,7 +311,7 @@ function buildPresetOptionsHtml(includePlaceholder) {
   }
 
   for (const preset of FUNCTION_PRESETS) {
-    options.push(`<option value="${preset.value}">${preset[currentLanguage]}</option>`);
+    options.push(`<option value="${preset.value}">${preset[currentLanguage] || preset.de}</option>`);
   }
 
   return options.join('');
@@ -267,11 +329,12 @@ function refreshPresetOptions(selectEl, includePlaceholder) {
 }
 
 function updateLanguageButtons() {
-  const isGerman = currentLanguage === 'de';
-  controls.langDeButton.classList.toggle('is-active', isGerman);
-  controls.langEnButton.classList.toggle('is-active', !isGerman);
-  controls.langDeButton.setAttribute('aria-pressed', isGerman ? 'true' : 'false');
-  controls.langEnButton.setAttribute('aria-pressed', isGerman ? 'false' : 'true');
+  for (const language of SUPPORTED_LANGUAGES) {
+    const button = languageButtons[language];
+    const isActive = currentLanguage === language;
+    button.classList.toggle('is-active', isActive);
+    button.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+  }
 }
 
 function applyLanguage() {
@@ -321,7 +384,7 @@ function applyLanguage() {
 }
 
 function setLanguage(language) {
-  currentLanguage = language === 'en' ? 'en' : 'de';
+  currentLanguage = normalizeLanguage(language);
   persistLanguage();
   applyLanguage();
   syncHistoryState();
@@ -1229,6 +1292,10 @@ controls.langDeButton.addEventListener('click', function() {
 
 controls.langEnButton.addEventListener('click', function() {
   setLanguage('en');
+});
+
+controls.langFrButton.addEventListener('click', function() {
+  setLanguage('fr');
 });
 
 window.addEventListener('popstate', function(event) {
