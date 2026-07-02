@@ -25,6 +25,12 @@ The page uses a shared app version in three places:
 
 Whenever `index.html`, local CSS, local JavaScript, or `js/mathjax-config.js` changes, update all three places together and keep the visible version badge current. This prevents GitHub Pages or browser caches from mixing old JavaScript with new HTML.
 
+## Language Maintenance
+
+The app currently supports German and English. Unless a request explicitly limits a change to one language, every user-visible text change must be made synchronously in both languages. Keep static HTML fallback text and the corresponding entries in the `TEXT` object in `js/app.js` aligned.
+
+When changing labels, button text, titles, placeholders, ARIA labels, status messages, or MathJax explanation text, update all language variants in the same commit. Verification should include switching the language selector and checking the affected UI in each language.
+
 ## Local Workflow
 
 The project can be edited locally in Zed. Meaningful changes are then transferred to GitHub with Git.
